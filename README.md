@@ -1,63 +1,154 @@
-# CodeIgniter 4 Application Starter
+# Running Multiple Applications with one CodeIgniter Installation
 
-## What is CodeIgniter?
+See https://codeigniter4.github.io/CodeIgniter4/general/managing_apps.html#running-multiple-applications-with-one-codeigniter-installation
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](http://codeigniter.com).
+## Folder Structure
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+```
+multiple/
+├── LICENSE
+├── README.md
+├── bar/
+│   ├── app/
+│   ├── env
+│   ├── phpunit.xml.dist
+│   ├── public/
+│   ├── spark/
+│   ├── tests/
+│   └── writable/
+├── builds
+├── composer.json
+├── composer.lock
+├── foo/
+│   ├── app/
+│   ├── env
+│   ├── phpunit.xml.dist
+│   ├── public/
+│   ├── spark/
+│   ├── tests/
+│   └── writable/
+└── vendor
+    ├── autoload.php
+    ├── bin/
+    ├── codeigniter4/
+    └── composer/
+```
 
-More information about the plans for version 4 can be found in [the announcement](http://forum.codeigniter.com/thread-62615.html) on the forums.
+## Install CodeIgniter4
 
-The user guide corresponding to this version of the framework can be found
-[here](https://codeigniter4.github.io/userguide/).
+Install CodeIgniter4 with Composer.
 
-## Installation & updates
+```
+$ composer create-project codeigniter4/appstarter multiple
+```
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+## Create Folders for Apps
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+Create `foo/` for one app.
 
-## Setup
+```
+$ cd multiple/
+$ mkdir foo
+```
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+Move files into `foo/`.
 
-## Important Change with index.php
+```
+$ mv app/ public/ tests/ writable/ spark env phpunit.xml.dist foo/
+```
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+Create `bar/` for another app.
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+```
+$ cp -pr foo/ bar/
+```
 
-**Please** read the user guide for a better explanation of how CI4 works!
+## Fix Composer autoload
 
-## Repository Management
+Fix `composer.json`.
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
+```diff
+--- a/composer.json
++++ b/composer.json
+@@ -17,10 +17,6 @@
+         "ext-fileinfo": "Improves mime type detection for files"
+     },
+     "autoload": {
+-        "psr-4": {
+-            "App\\": "app",
+-            "Config\\": "app/Config"
+-        },
+         "exclude-from-classmap": [
+             "**/Database/Migrations/**"
+         ]
+```
 
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
+Update Composer autoload config.
 
-## Server Requirements
+```
+$ composer dump-autoload
+```
 
-PHP version 7.3 or higher is required, with the following extensions installed:
+## Update Paths
 
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+Update path configurations.
 
-Additionally, make sure that the following extensions are enabled in your PHP:
+### foo
 
-- json (enabled by default - don't turn it off)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php)
-- xml (enabled by default - don't turn it off)
+```diff
+--- a/foo/app/Config/Constants.php
++++ b/foo/app/Config/Constants.php
+@@ -23,7 +23,7 @@ defined('APP_NAMESPACE') || define('APP_NAMESPACE', 'App');
+  | The path that Composer's autoload file is expected to live. By default,
+  | the vendor folder is in the Root directory, but you can customize that here.
+  */
+-defined('COMPOSER_PATH') || define('COMPOSER_PATH', ROOTPATH . 'vendor/autoload.php');
++defined('COMPOSER_PATH') || define('COMPOSER_PATH', ROOTPATH . '../vendor/autoload.php');
+ 
+ /*
+  |--------------------------------------------------------------------------
+```
+
+```diff
+--- a/foo/app/Config/Paths.php
++++ b/foo/app/Config/Paths.php
+@@ -25,7 +25,7 @@ class Paths
+      *
+      * @var string
+      */
+-    public $systemDirectory = __DIR__ . '/../../vendor/codeigniter4/framework/system';
++    public $systemDirectory = __DIR__ . '/../../../vendor/codeigniter4/framework/system';
+ 
+     /**
+      * ---------------------------------------------------------------
+```
+
+### bar
+
+```diff
+--- a/bar/app/Config/Constants.php
++++ b/bar/app/Config/Constants.php
+@@ -23,7 +23,7 @@ defined('APP_NAMESPACE') || define('APP_NAMESPACE', 'App');
+  | The path that Composer's autoload file is expected to live. By default,
+  | the vendor folder is in the Root directory, but you can customize that here.
+  */
+-defined('COMPOSER_PATH') || define('COMPOSER_PATH', ROOTPATH . 'vendor/autoload.php');
++defined('COMPOSER_PATH') || define('COMPOSER_PATH', ROOTPATH . '../vendor/autoload.php');
+ 
+ /*
+  |--------------------------------------------------------------------------
+```
+
+```diff
+--- a/bar/app/Config/Paths.php
++++ b/bar/app/Config/Paths.php
+@@ -25,7 +25,7 @@ class Paths
+      *
+      * @var string
+      */
+-    public $systemDirectory = __DIR__ . '/../../vendor/codeigniter4/framework/system';
++    public $systemDirectory = __DIR__ . '/../../../vendor/codeigniter4/framework/system';
+ 
+     /**
+      * ---------------------------------------------------------------
+```
