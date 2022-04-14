@@ -11,7 +11,7 @@ codeigniter4-multiple-apps-sample/
 │   ├── env
 │   ├── phpunit.xml.dist
 │   ├── public/
-│   ├── spark/
+│   ├── spark
 │   ├── tests/
 │   └── writable/
 ├── foo/
@@ -19,7 +19,7 @@ codeigniter4-multiple-apps-sample/
 │   ├── env
 │   ├── phpunit.xml.dist
 │   ├── public/
-│   ├── spark/
+│   ├── spark
 │   ├── tests/
 │   └── writable/
 ├── vendor/
