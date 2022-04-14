@@ -5,9 +5,7 @@ See https://codeigniter4.github.io/CodeIgniter4/general/managing_apps.html#runni
 ## Folder Structure
 
 ```
-multiple/
-├── LICENSE
-├── README.md
+codeigniter4-multiple-apps-sample/
 ├── bar/
 │   ├── app/
 │   ├── env
@@ -16,9 +14,6 @@ multiple/
 │   ├── spark/
 │   ├── tests/
 │   └── writable/
-├── builds
-├── composer.json
-├── composer.lock
 ├── foo/
 │   ├── app/
 │   ├── env
@@ -27,11 +22,16 @@ multiple/
 │   ├── spark/
 │   ├── tests/
 │   └── writable/
-└── vendor
-    ├── autoload.php
-    ├── bin/
-    ├── codeigniter4/
-    └── composer/
+├── vendor
+│    ├── autoload.php
+│    ├── bin/
+│    ├── codeigniter4/framework/
+│    └── composer/
+├── LICENSE
+├── README.md
+├── builds
+├── composer.json
+└── composer.lock
 ```
 
 ## Install CodeIgniter4
