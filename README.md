@@ -22,7 +22,7 @@ codeigniter4-multiple-apps-sample/
 │   ├── spark/
 │   ├── tests/
 │   └── writable/
-├── vendor
+├── vendor/
 │    ├── autoload.php
 │    ├── bin/
 │    ├── codeigniter4/framework/
